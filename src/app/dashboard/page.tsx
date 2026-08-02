@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -11,10 +11,16 @@ import OverviewCards from "@/components/dashboard/OverviewCards";
 import QuickActions from "@/components/dashboard/QuickActions";
 import RecentActivity from "@/components/dashboard/RecentActivity";
 import LevelCard from "@/components/dashboard/LevelCard";
+import StreakCard from "@/components/dashboard/StreakCard";
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+
+  const [streak, setStreak] = useState({
+  streak: 1,
+  longest_streak: 1,
+});
 
   useEffect(() => {
     if (!loading && !user) {
@@ -29,6 +35,8 @@ export default function DashboardPage() {
       </main>
     );
   }
+
+  
 
   return (
     <DashboardLayout>

@@ -1,10 +1,12 @@
-import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import ChallengeDashboard from "@/components/challenges/ChallengeDashboard";
+"use client";
 
-export default function DailyChallengesPage() {
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import DailyChallenge from "@/components/dailyChallenge/DailyChallenge";
+
+export default function DailyChallengePage() {
   return (
     <DashboardLayout>
-      <ChallengeDashboard />
+      <DailyChallenge />
     </DashboardLayout>
   );
 }

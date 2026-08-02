@@ -8,6 +8,7 @@ export function useXP() {
   const [xp, setXP] = useState(0);
   const [level, setLevel] = useState(1);
   const [nextLevel, setNextLevel] = useState(100);
+  const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(true);
 
   async function loadXP() {
@@ -34,8 +35,9 @@ export function useXP() {
     const info = calculateLevel(totalXP);
 
     setXP(totalXP);
-    setLevel(info.level);
-    setNextLevel(info.next);
+setLevel(info.level);
+setNextLevel(info.next);
+setProgress(info.progress);
 
     setLoading(false);
   }
@@ -45,10 +47,11 @@ export function useXP() {
   }, []);
 
   return {
-    xp,
-    level,
-    nextLevel,
-    loading,
-    refresh: loadXP,
-  };
+  xp,
+  level,
+  nextLevel,
+  progress,
+  loading,
+  refresh: loadXP,
+};
 }

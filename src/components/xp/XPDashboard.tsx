@@ -1,10 +1,26 @@
-import { xpData } from "@/constants/xp";
+"use client";
+
+import { useXP } from "@/features/xp/hooks/useXP";
 import XPCard from "./XPCard";
 import RecentActivity from "./RecentActivity";
 
 export default function XPDashboard() {
-  const progress =
-    (xpData.totalXP / xpData.nextLevelXP) * 100;
+  const {
+  xp,
+  level,
+  nextLevel,
+  progress,
+  loading,
+} = useXP();
+
+  if (loading) {
+    return (
+      <div className="text-center text-white">
+        Loading XP...
+      </div>
+    );
+  }
+
 
   return (
     <main className="space-y-10">
@@ -25,7 +41,7 @@ export default function XPDashboard() {
 
       </div>
 
-      <section className="rounded-3xl border border-white/10 bg-slate-900/60 p-8">
+      <section className="rounded-3xl border border-white/10 bg-slate-900 p-8">
 
         <div className="flex items-center justify-between">
 
@@ -36,7 +52,7 @@ export default function XPDashboard() {
             </p>
 
             <h2 className="mt-2 text-6xl font-black text-indigo-400">
-              {xpData.totalXP}
+              {xp}
             </h2>
 
           </div>
@@ -47,8 +63,8 @@ export default function XPDashboard() {
               Level
             </p>
 
-            <h2 className="mt-2 text-5xl font-black">
-              {xpData.currentLevel}
+            <h2 className="mt-2 text-5xl font-black text-yellow-400">
+              {level}
             </h2>
 
           </div>
@@ -59,17 +75,23 @@ export default function XPDashboard() {
 
           <div className="mb-2 flex justify-between text-sm text-slate-400">
 
-            <span>Progress to Level {xpData.currentLevel + 1}</span>
+            <span>
+              Progress to Level {level + 1}
+            </span>
 
-            <span>{xpData.totalXP}/{xpData.nextLevelXP}</span>
+            <span>
+              {xp % nextLevel}/{nextLevel}
+            </span>
 
           </div>
 
           <div className="h-4 rounded-full bg-slate-800">
 
             <div
-              className="h-4 rounded-full bg-indigo-500 transition-all"
-              style={{ width: `${progress}%` }}
+              className="h-4 rounded-full bg-indigo-500 transition-all duration-500"
+              style={{
+                width: `${progress}%`,
+              }}
             />
 
           </div>
@@ -78,17 +100,22 @@ export default function XPDashboard() {
 
       </section>
 
-      <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-6 md:grid-cols-3">
 
-        {xpData.stats.map((stat) => (
+        <XPCard
+          title="Current XP"
+          value={xp}
+        />
 
-          <XPCard
-            key={stat.title}
-            title={stat.title}
-            value={stat.value}
-          />
+        <XPCard
+          title="Current Level"
+          value={level}
+        />
 
-        ))}
+        <XPCard
+          title="Next Level XP"
+          value={nextLevel}
+        />
 
       </section>
 

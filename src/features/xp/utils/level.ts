@@ -1,36 +1,36 @@
 export function calculateLevel(xp: number) {
-  if (xp < 100)
-    return {
-      level: 1,
-      next: 100,
-    };
+  const levels = [
+    100,
+    250,
+    500,
+    800,
+    1200,
+    2000,
+    3000,
+    4500,
+    6000,
+    8000,
+  ];
 
-  if (xp < 250)
-    return {
-      level: 2,
-      next: 250,
-    };
+  let level = 1;
 
-  if (xp < 500)
-    return {
-      level: 3,
-      next: 500,
-    };
+  for (let i = 0; i < levels.length; i++) {
+    if (xp >= levels[i]) {
+      level = i + 2;
+    }
+  }
 
-  if (xp < 800)
-    return {
-      level: 4,
-      next: 800,
-    };
-
-  if (xp < 1200)
-    return {
-      level: 5,
-      next: 1200,
-    };
+  const next =
+    levels[level - 1] || levels[levels.length - 1];
 
   return {
-    level: 6,
-    next: 2000,
+    level,
+    next,
+    progress:
+      level === 1
+        ? (xp / 100) * 100
+        : ((xp - (levels[level - 2] || 0)) /
+            (next - (levels[level - 2] || 0))) *
+          100,
   };
 }

@@ -1,12 +1,24 @@
 import { supabase } from "@/lib/supabase";
 
-export async function getDashboardStats(userId: string) {
+export interface DashboardStats {
+  profile: any;
+  totalXP: number;
+  projectCount: number;
+  certificateCount: number;
+  achievementCount: number;
+  careerScore: number;
+  profileCompletion: number;
+}
+
+export async function getDashboardStats(
+  userId: string
+): Promise<DashboardStats> {
   const [
-    profile,
-    projects,
-    certificates,
-    achievements,
-    xpHistory,
+    profileResult,
+    projectsResult,
+    certificatesResult,
+    achievementsResult,
+    xpHistoryResult,
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -35,29 +47,27 @@ export async function getDashboardStats(userId: string) {
       .eq("user_id", userId),
   ]);
 
-  const xp =
-    xpHistory.data?.reduce(
-      (sum, item) => sum + (item.points || 0),
-      0
-    ) || 0;
+  const xpRows = (xpHistoryResult.data ?? []) as { points: number }[];
 
-  const level = Math.floor(xp / 100) + 1;
+  const totalXP = xpRows.reduce(
+    (sum, row) => sum + (row.points ?? 0),
+    0
+  );
 
   return {
-    projects: projects.count || 0,
+    profile: profileResult.data,
 
-    certificates: certificates.count || 0,
+    totalXP,
 
-    achievements: achievements.count || 0,
+    projectCount: projectsResult.count ?? 0,
 
-    xp,
+    certificateCount: certificatesResult.count ?? 0,
 
-    level,
+    achievementCount: achievementsResult.count ?? 0,
 
-    careerScore:
-      profile.data?.career_score || 0,
+    careerScore: profileResult.data?.career_score ?? 0,
 
     profileCompletion:
-      profile.data?.profile_completion || 0,
+      profileResult.data?.profile_completion ?? 0,
   };
 }

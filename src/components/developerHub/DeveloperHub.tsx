@@ -1,8 +1,20 @@
 import StatsCard from "./StatsCard";
 import SkillCard from "./SkillCard";
 import RoadmapCard from "./RoadmapCard";
+import GithubCard from "../github/GithubCard";
+import { useDeveloperHub } from "@/features/developerHub/hooks/useDeveloperHub";
 
 export default function DeveloperHub() {
+  const { data, loading } = useDeveloperHub();
+
+if (loading) {
+  return (
+    <div className="text-center text-white py-20">
+      Loading Developer Hub...
+    </div>
+  );
+}
+
   return (
     <div className="space-y-8">
 
@@ -23,26 +35,27 @@ export default function DeveloperHub() {
       <div className="grid gap-6 md:grid-cols-4">
 
         <StatsCard
-          title="Problems Solved"
-          value="120"
-        />
+  title="XP"
+  value={data.totalXP}
+/>
 
         <StatsCard
-          title="Projects"
-          value="8"
-        />
+  title="Projects"
+  value={data.projectCount}
+/>
 
         <StatsCard
-          title="Certificates"
-          value="14"
-        />
+  title="Certificates"
+  value={data.certificateCount}
+/>
 
         <StatsCard
-          title="GitHub Contributions"
-          value="542"
-        />
+  title="Level"
+  value={data.level}
+/>
 
       </div>
+      <GithubCard githubUrl={data.profile?.github_url} />
 
       {/* Skills */}
 
