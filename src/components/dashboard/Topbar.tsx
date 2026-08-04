@@ -7,9 +7,12 @@ import { ChevronDown, User, Settings, LogOut } from "lucide-react";
 
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import LogoutButton from "@/components/auth/LogoutButton";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import Notifications from "./Notifications";
 
 export default function Topbar() {
   const { profile } = useProfile();
+  const { user } = useAuth();
 
   const [open, setOpen] = useState(false);
 
@@ -35,10 +38,10 @@ export default function Topbar() {
     profile?.full_name?.charAt(0).toUpperCase() || "U";
 
   return (
-    <header className="flex items-center justify-between border-b border-white/10 bg-slate-950 px-8 py-4">
+    <header className="flex flex-col gap-4 border-b border-white/10 bg-slate-950 px-4 py-4 md:flex-row md:items-center md:justify-between md:px-8">
 
       <div>
-        <h1 className="text-3xl font-bold text-white">
+        <h1 className="text-2xl font-bold md:text-3xl">
           Dashboard
         </h1>
 
@@ -51,15 +54,9 @@ export default function Topbar() {
         </p>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex w-full items-center justify-end gap-3 md:w-auto">
 
-        <button className="relative rounded-xl border border-white/10 px-5 py-3 text-white hover:bg-slate-800 transition">
-  Notifications
-
-  <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold">
-    0
-  </span>
-</button>
+      {user && <Notifications userId={user.id} />}
 
         <div className="relative" ref={menuRef}>
 

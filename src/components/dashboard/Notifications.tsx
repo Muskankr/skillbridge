@@ -1,61 +1,88 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-    getNotifications,
-    getUnreadCount,
-    markAllRead,
-    markAsRead,
-} from "@/features/notifications/notificationService";
+import { useEffect, useRef, useState } from "react";
 
 import NotificationBell from "./NotificationBell";
 import NotificationDropdown from "./NotificationDropdown";
 
+import {
+  getNotifications,
+  getUnreadCount,
+  markAsRead,
+  markAllRead,
+} from "@/features/notifications/notificationService";
+
 interface Props {
-    userId: string;
+  userId: string;
 }
 
 export default function Notifications({ userId }: Props) {
-    const [notifications, setNotifications] = useState<any[]>([]);
-    const [count, setCount] = useState(0);
-    const [open, setOpen] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [count, setCount] = useState(0);
+  const [open, setOpen] = useState(false);
 
-    async function load() {
-        const data = await getNotifications(userId);
-        const unread = await getUnreadCount(userId);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-        setNotifications(data);
-        setCount(unread);
+  async function load() {
+    const data = await getNotifications(userId);
+    const unread = await getUnreadCount(userId);
+
+    setNotifications(data);
+    setCount(unread);
+  }
+
+  useEffect(() => {
+    if (userId) {
+      load();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
     }
 
-    useEffect(() => {
-        load();
-    }, []);
+    document.addEventListener("mousedown", handleClickOutside);
 
-    async function handleRead(id: string) {
-        await markAsRead(id);
-        load();
-    }
+    return () =>
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+  }, []);
 
-    async function handleMarkAll() {
-        await markAllRead(userId);
-        load();
-    }
+  async function handleRead(id: string) {
+    await markAsRead(id);
+    await load();
+  }
 
-    return (
-        <div className="relative">
-            <NotificationBell
-                unreadCount={count}
-                onClick={() => setOpen(!open)}
-            />
+  async function handleMarkAll() {
+    await markAllRead(userId);
+    await load();
+  }
 
-            {open && (
-                <NotificationDropdown
-                    notifications={notifications}
-                    onRead={handleRead}
-                    onMarkAll={handleMarkAll}
-                />
-            )}
-        </div>
-    );
+  return (
+    <div
+      ref={dropdownRef}
+      className="relative"
+    >
+      <NotificationBell
+        unreadCount={count}
+        onClick={() => setOpen(!open)}
+      />
+
+      {open && (
+        <NotificationDropdown
+          notifications={notifications}
+          onRead={handleRead}
+          onMarkAll={handleMarkAll}
+        />
+      )}
+    </div>
+  );
 }

@@ -1,68 +1,65 @@
 import { supabase } from "@/lib/supabase";
 
 export async function getStreak(userId: string) {
-    const { data, error } = await supabase
-        .from("user_streaks")
-        .select("*")
-        .eq("user_id", userId)
-        .maybeSingle();
+  const { data, error } = await supabase
+    .from("user_streaks")
+    .select("*")
+    .eq("user_id", userId)
+    .maybeSingle();
 
-    if (error) {
-        console.error(error);
-        return null;
-    }
+  console.log("GET STREAK:", data, error);
 
-    return data;
+  return data;
 }
 
 export async function updateStreak(userId: string) {
-    try {
-        const today = new Date();
+  const today = new Date().toISOString().split("T")[0];
 
-        const todayString = today.toISOString().split("T")[0];
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
 
-        const yesterday = new Date();
+  const yesterdayString = yesterday.toISOString().split("T")[0];
 
-        yesterday.setDate(today.getDate() - 1);
+  const { data, error } = await supabase
+    .from("user_streaks")
+    .select("*")
+    .eq("user_id", userId)
+    .maybeSingle();
 
-        const yesterdayString = yesterday.toISOString().split("T")[0];
+  console.log("Existing streak:", data);
+  console.log("Select error:", error);
 
-        const { data } = await supabase
-            .from("user_streaks")
-            .select("*")
-            .eq("user_id", userId)
-            .maybeSingle();
+  if (!data) {
+    const { error: insertError } = await supabase
+      .from("user_streaks")
+      .insert({
+        user_id: userId,
+        streak: 1,
+        longest_streak: 1,
+        last_login: today,
+      });
 
-        if (!data) {
-            await supabase.from("user_streaks").insert({
-                user_id: userId,
-                streak: 1,
-                longest_streak: 1,
-                last_login: todayString,
-            });
+    console.log("Insert error:", insertError);
 
-            return;
-        }
+    return;
+  }
 
-        if (data.last_login === todayString) return;
+  if (data.last_login === today) return;
 
-        let streak = 1;
+  let streak = 1;
 
-        if (data.last_login === yesterdayString) {
-            streak = data.streak + 1;
-        }
+  if (data.last_login === yesterdayString) {
+    streak = data.streak + 1;
+  }
 
-        const longest = Math.max(streak, data.longest_streak);
+  const { error: updateError } = await supabase
+    .from("user_streaks")
+    .update({
+      streak,
+      longest_streak: Math.max(streak, data.longest_streak),
+      last_login: today,
+    })
+    .eq("user_id", userId);
 
-        await supabase
-            .from("user_streaks")
-            .update({
-                streak,
-                longest_streak: longest,
-                last_login: todayString,
-            })
-            .eq("user_id", userId);
-    } catch (error) {
-        console.error(error);
-    }
+  console.log("Update error:", updateError);
 }
