@@ -2,8 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-
-import { ChevronDown, User, Settings, LogOut } from "lucide-react";
+import { ChevronDown, User, Settings } from "lucide-react";
 
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import LogoutButton from "@/components/auth/LogoutButton";
@@ -38,88 +37,95 @@ export default function Topbar() {
     profile?.full_name?.charAt(0).toUpperCase() || "U";
 
   return (
-    <header className="flex flex-col gap-4 border-b border-white/10 bg-slate-950 px-4 py-4 md:flex-row md:items-center md:justify-between md:px-8">
+    <header className="border-b border-white/10 bg-slate-950">
 
-      <div>
-        <h1 className="text-2xl font-bold md:text-3xl">
-          Dashboard
-        </h1>
+      <div className="flex flex-col gap-4 px-4 py-4 md:flex-row md:items-center md:justify-between md:px-8">
 
-        <p className="text-slate-400">
-          Welcome back,{" "}
-          <span className="font-semibold text-white">
-            {profile?.full_name || "Developer"}
-          </span>{" "}
-          👋
-        </p>
-      </div>
+        {/* Left */}
+        <div className="pl-12 md:pl-0">
+          <h1 className="text-2xl font-bold md:text-3xl">
+            Dashboard
+          </h1>
 
-      <div className="flex w-full items-center justify-end gap-3 md:w-auto">
+          <p className="text-sm text-slate-400 md:text-base">
+            Welcome back,{" "}
+            <span className="font-semibold text-white">
+              {profile?.full_name || "Developer"}
+            </span>{" "}
+            👋
+          </p>
+        </div>
 
-      {user && <Notifications userId={user.id} />}
+        {/* Right */}
+        <div className="flex items-center justify-end gap-3">
 
-        <div className="relative" ref={menuRef}>
+          {user && <Notifications userId={user.id} />}
 
-          <button
-            onClick={() => setOpen(!open)}
-            className="flex items-center gap-2"
+          <div
+            ref={menuRef}
+            className="relative"
           >
-            {profile?.avatar_url ? (
-  <img
-    src={profile.avatar_url}
-    alt="Avatar"
-    className="h-11 w-11 rounded-full object-cover border-2 border-indigo-500"
-  />
-) : (
-  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-600 font-bold text-white">
-    {initial}
-  </div>
-)}
+            <button
+              onClick={() => setOpen(!open)}
+              className="flex items-center gap-2"
+            >
+              {profile?.avatar_url ? (
+                <img
+                  src={profile.avatar_url}
+                  alt="Avatar"
+                  className="h-11 w-11 rounded-full border-2 border-indigo-500 object-cover"
+                />
+              ) : (
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-600 font-bold text-white">
+                  {initial}
+                </div>
+              )}
 
-            <ChevronDown
-              size={18}
-              className={`text-white transition ${open ? "rotate-180" : ""
+              <ChevronDown
+                size={18}
+                className={`text-white transition-transform ${
+                  open ? "rotate-180" : ""
                 }`}
-            />
-          </button>
+              />
+            </button>
 
-          {open && (
-            <div className="absolute right-0 mt-3 w-56 rounded-2xl border border-white/10 bg-slate-900 shadow-xl">
+            {open && (
+              <div className="absolute right-0 mt-3 w-56 overflow-hidden rounded-2xl border border-white/10 bg-slate-900 shadow-2xl">
 
-              <div className="border-b border-white/10 p-4">
+                <div className="border-b border-white/10 p-4">
+                  <p className="font-semibold text-white">
+                    {profile?.full_name || "Developer"}
+                  </p>
 
-                <p className="font-semibold text-white">
-                  {profile?.full_name || "Developer"}
-                </p>
+                  <p className="text-sm text-slate-400">
+                    {profile?.headline ||
+                      "Welcome to SkillBridge"}
+                  </p>
+                </div>
 
-                <p className="text-sm text-slate-400">
-                  {profile?.headline || "Welcome to SkillBridge"}
-                </p>
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-3 px-4 py-3 transition hover:bg-slate-800"
+                >
+                  <User size={18} />
+                  My Profile
+                </Link>
+
+                <Link
+                  href="/settings"
+                  className="flex items-center gap-3 px-4 py-3 transition hover:bg-slate-800"
+                >
+                  <Settings size={18} />
+                  Settings
+                </Link>
+
+                <div className="border-t border-white/10 p-2">
+                  <LogoutButton />
+                </div>
 
               </div>
-
-              <Link
-                href="/profile"
-                className="flex items-center gap-3 px-4 py-3 text-white hover:bg-slate-800"
-              >
-                <User size={18} />
-                My Profile
-              </Link>
-
-              <Link
-                href="/settings"
-                className="flex items-center gap-3 px-4 py-3 text-white hover:bg-slate-800"
-              >
-                <Settings size={18} />
-                Settings
-              </Link>
-
-              <div className="border-t border-white/10 p-2">
-                <LogoutButton />
-              </div>
-
-            </div>
-          )}
+            )}
+          </div>
 
         </div>
 
