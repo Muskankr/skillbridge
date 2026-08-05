@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 
@@ -8,12 +12,19 @@ interface Props {
 export default function DashboardLayout({
   children,
 }: Props) {
-  return (
-    <div className="min-h-screen bg-slate-950 lg:flex">
-      <Sidebar />
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-      <div className="flex min-h-screen flex-1 flex-col">
-        <Topbar />
+  return (
+    <div className="min-h-screen bg-slate-950">
+      <Sidebar
+        open={sidebarOpen}
+        setOpen={setSidebarOpen}
+      />
+
+      <div className="lg:ml-72 min-h-screen flex flex-col">
+        <Topbar
+          setSidebarOpen={setSidebarOpen}
+        />
 
         <main className="flex-1 p-4 md:p-6 lg:p-8">
           {children}
