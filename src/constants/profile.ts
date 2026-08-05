@@ -1,5 +1,9 @@
 export const profile = {
-  profileCompletion: 82,
+  name: "Muskan Kumari",
+  role: "B.Tech CSE (AI & ML)",
+  college: "UIET, MDU Rohtak",
+
+  completion: 82,
 
   stats: [
     {
