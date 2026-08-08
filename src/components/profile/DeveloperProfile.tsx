@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import GithubCard from "@/components/github/GithubCard";
 
 interface Profile {
   full_name: string | null;
@@ -242,6 +243,11 @@ export default function DeveloperProfile() {
             )}
         </div>
       </section>
+
+      {/* GitHub Integration */}
+{profile.github_url && (
+  <GithubCard githubUrl={profile.github_url} />
+)}
     </div>
   );
 }

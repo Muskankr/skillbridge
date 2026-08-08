@@ -1,23 +1,40 @@
 import { supabase } from "@/lib/supabase";
 
+export type XPResult = {
+  success: boolean;
+  awarded: boolean;
+  error: any | null;
+};
+
+/**
+ * Award XP through the Supabase database function.
+ *
+ * IMPORTANT:
+ * The actual XP amount is determined server-side.
+ * The client only sends the action/reason.
+ */
 export async function awardXP(
   userId: string,
-  points: number,
   reason: string
-) {
-  // Prevent duplicate XP for the same reason
-  const { data: existing } = await supabase
-    .from("xp_history")
-    .select("id")
-    .eq("user_id", userId)
-    .eq("reason", reason)
-    .maybeSingle();
-
-  if (existing) return;
-
-  await supabase.from("xp_history").insert({
-    user_id: userId,
-    points,
-    reason,
+): Promise<XPResult> {
+  const { data, error } = await supabase.rpc("award_xp", {
+    p_user_id: userId,
+    p_reason: reason,
   });
+
+  if (error) {
+    console.error("XP award error:", error);
+
+    return {
+      success: false,
+      awarded: false,
+      error,
+    };
+  }
+
+  return {
+    success: true,
+    awarded: data === true,
+    error: null,
+  };
 }

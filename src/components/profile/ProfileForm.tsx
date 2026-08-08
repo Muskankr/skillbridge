@@ -1,6 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import { useProfile } from "@/features/profile/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
@@ -13,25 +16,57 @@ import { calculateCareerScore } from "@/features/profile/utils/careerScore";
 
 import { awardXP } from "@/features/xp/services/xp.service";
 
+interface FormData {
+  full_name: string;
+  username: string;
+  headline: string;
+  college: string;
+  branch: string;
+  graduation_year: string;
+  bio: string;
+  github_url: string;
+  linkedin_url: string;
+  portfolio_url: string;
+  location: string;
+}
+
+const emptyForm: FormData = {
+  full_name: "",
+  username: "",
+  headline: "",
+  college: "",
+  branch: "",
+  graduation_year: "",
+  bio: "",
+  github_url: "",
+  linkedin_url: "",
+  portfolio_url: "",
+  location: "",
+};
+
+function isValidUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+
+    return (
+      url.protocol === "http:" ||
+      url.protocol === "https:"
+    );
+  } catch {
+    return false;
+  }
+}
+
 export default function ProfileForm() {
   const { profile, loading } = useProfile();
 
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarFile, setAvatarFile] =
+    useState<File | null>(null);
+
   const [saving, setSaving] = useState(false);
 
-  const [formData, setFormData] = useState({
-    full_name: "",
-    username: "",
-    headline: "",
-    college: "",
-    branch: "",
-    graduation_year: "",
-    bio: "",
-    github_url: "",
-    linkedin_url: "",
-    portfolio_url: "",
-    location: "",
-  });
+  const [formData, setFormData] =
+    useState<FormData>(emptyForm);
 
   useEffect(() => {
     if (!profile) return;
@@ -42,17 +77,22 @@ export default function ProfileForm() {
       headline: profile.headline || "",
       college: profile.college || "",
       branch: profile.branch || "",
-      graduation_year: profile.graduation_year?.toString() || "",
+      graduation_year:
+        profile.graduation_year?.toString() || "",
       bio: profile.bio || "",
       github_url: profile.github_url || "",
-      linkedin_url: profile.linkedin_url || "",
-      portfolio_url: profile.portfolio_url || "",
+      linkedin_url:
+        profile.linkedin_url || "",
+      portfolio_url:
+        profile.portfolio_url || "",
       location: profile.location || "",
     });
   }, [profile]);
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement
+    >
   ) {
     const { name, value } = e.target;
 
@@ -75,82 +115,281 @@ export default function ProfileForm() {
         return;
       }
 
-      let avatarUrl = profile?.avatar_url || "";
+      const fullName =
+        formData.full_name.trim();
+      const username =
+        formData.username.trim();
+      const headline =
+        formData.headline.trim();
+      const college =
+        formData.college.trim();
+      const branch =
+        formData.branch.trim();
+      const bio =
+        formData.bio.trim();
+      const githubUrl =
+        formData.github_url.trim();
+      const linkedinUrl =
+        formData.linkedin_url.trim();
+      const portfolioUrl =
+        formData.portfolio_url.trim();
+      const location =
+        formData.location.trim();
 
-      // Upload avatar if user selected a new one
+      // Basic validation
+      if (!fullName) {
+        alert("Please enter your full name.");
+        return;
+      }
+
+      if (!username) {
+        alert("Please enter a username.");
+        return;
+      }
+
+      if (!headline) {
+        alert("Please enter a headline.");
+        return;
+      }
+
+      if (!college) {
+        alert("Please enter your college.");
+        return;
+      }
+
+      if (!branch) {
+        alert("Please enter your branch.");
+        return;
+      }
+
+      // Length validation
+      if (fullName.length > 100) {
+        alert(
+          "Full name must be 100 characters or less."
+        );
+        return;
+      }
+
+      if (username.length > 50) {
+        alert(
+          "Username must be 50 characters or less."
+        );
+        return;
+      }
+
+      if (headline.length > 150) {
+        alert(
+          "Headline must be 150 characters or less."
+        );
+        return;
+      }
+
+      if (bio.length > 1000) {
+        alert(
+          "Bio must be 1000 characters or less."
+        );
+        return;
+      }
+
+      // Graduation year
+      let graduationYear: number | null = null;
+
+      if (formData.graduation_year.trim()) {
+        const parsedYear = Number(
+          formData.graduation_year
+        );
+
+        if (
+          !Number.isInteger(parsedYear) ||
+          parsedYear < 2020 ||
+          parsedYear > 2100
+        ) {
+          alert(
+            "Please enter a valid graduation year."
+          );
+          return;
+        }
+
+        graduationYear = parsedYear;
+      }
+
+      // URL validation
+      if (
+        githubUrl &&
+        !isValidUrl(githubUrl)
+      ) {
+        alert(
+          "Please enter a valid GitHub URL."
+        );
+        return;
+      }
+
+      if (githubUrl) {
+        const github = new URL(githubUrl);
+
+        if (
+          github.hostname !== "github.com" &&
+          github.hostname !==
+            "www.github.com"
+        ) {
+          alert(
+            "GitHub URL must point to github.com."
+          );
+          return;
+        }
+      }
+
+      if (
+        linkedinUrl &&
+        !isValidUrl(linkedinUrl)
+      ) {
+        alert(
+          "Please enter a valid LinkedIn URL."
+        );
+        return;
+      }
+
+      if (linkedinUrl) {
+        const linkedin =
+          new URL(linkedinUrl);
+
+        if (
+          linkedin.hostname !==
+            "linkedin.com" &&
+          linkedin.hostname !==
+            "www.linkedin.com"
+        ) {
+          alert(
+            "LinkedIn URL must point to linkedin.com."
+          );
+          return;
+        }
+      }
+
+      if (
+        portfolioUrl &&
+        !isValidUrl(portfolioUrl)
+      ) {
+        alert(
+          "Please enter a valid portfolio URL."
+        );
+        return;
+      }
+
+      let avatarUrl =
+        profile?.avatar_url || "";
+
+      // Upload avatar
       if (avatarFile) {
-        const result = await uploadAvatar(user.id, avatarFile);
+        const result =
+          await uploadAvatar(
+            user.id,
+            avatarFile
+          );
 
         if (result.error) {
           alert(result.error.message);
           return;
         }
 
-        avatarUrl = result.publicUrl || avatarUrl;
+        avatarUrl =
+          result.publicUrl || avatarUrl;
       }
 
-      // Calculate profile completion
-      const profileCompletion = calculateProfileCompletion({
-        full_name: formData.full_name,
-        username: formData.username,
-        headline: formData.headline,
-        bio: formData.bio,
-        college: formData.college,
-        branch: formData.branch,
-        graduation_year: formData.graduation_year,
-        github_url: formData.github_url,
-        linkedin_url: formData.linkedin_url,
-        portfolio_url: formData.portfolio_url,
-        location: formData.location,
-      });
+      // Profile completion
+      const profileCompletion =
+        calculateProfileCompletion({
+          full_name: fullName,
+          username,
+          headline,
+          bio,
+          college,
+          branch,
+          graduation_year:
+            formData.graduation_year,
+          github_url: githubUrl,
+          linkedin_url: linkedinUrl,
+          portfolio_url: portfolioUrl,
+          location,
+        });
 
-      // Calculate career score
-      const careerScore = calculateCareerScore(profileCompletion);
+      // Career score
+      const careerScore =
+        calculateCareerScore(
+          profileCompletion
+        );
 
-      const { error } = await updateProfile(user.id, {
-        full_name: formData.full_name,
-        username: formData.username,
-        headline: formData.headline,
-        bio: formData.bio,
-        college: formData.college,
-        branch: formData.branch,
-
-        graduation_year: formData.graduation_year
-          ? Number(formData.graduation_year)
-          : null,
-
-        github_url: formData.github_url,
-        linkedin_url: formData.linkedin_url,
-        portfolio_url: formData.portfolio_url,
-        location: formData.location,
-
-        avatar_url: avatarUrl,
-
-        profile_completion: profileCompletion,
-        career_score: careerScore,
-      });
+      const { error } =
+        await updateProfile(
+          user.id,
+          {
+            full_name: fullName,
+            username,
+            headline,
+            bio,
+            college,
+            branch,
+            graduation_year:
+              graduationYear,
+            github_url: githubUrl,
+            linkedin_url: linkedinUrl,
+            portfolio_url:
+              portfolioUrl,
+            location,
+            avatar_url: avatarUrl,
+            profile_completion:
+              profileCompletion,
+            career_score:
+              careerScore,
+          }
+        );
 
       if (error) {
+        console.error(
+          "Profile update error:",
+          error
+        );
+
         alert(error.message);
         return;
       }
 
-      // Award XP
-      await awardXP(
+      /*
+       * Secure XP reward.
+       *
+       * The database decides:
+       * - whether this reward is allowed
+       * - whether it was already given
+       * - how many XP it is worth
+       */
+      const xpResult = await awardXP(
         user.id,
-        100,
-        "Completed Profile"
+        "profile_completed"
       );
+
+      if (!xpResult.success) {
+        console.error(
+          "Profile XP error:",
+          xpResult.error
+        );
+      }
 
       setAvatarFile(null);
 
-      alert("🎉 Profile updated successfully!");
+      alert(
+        "🎉 Profile updated successfully!"
+      );
 
-      // Refresh page so preview immediately shows new data
       window.location.reload();
     } catch (error) {
-      console.error("Profile update failed:", error);
-      alert("Something went wrong while updating your profile.");
+      console.error(
+        "Profile update failed:",
+        error
+      );
+
+      alert(
+        "Something went wrong while updating your profile."
+      );
     } finally {
       setSaving(false);
     }
@@ -158,16 +397,14 @@ export default function ProfileForm() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <p className="text-slate-400">
-          Loading Profile...
-        </p>
+      <div className="flex min-h-[300px] items-center justify-center text-slate-400">
+        Loading Profile...
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="rounded-2xl border border-white/10 bg-[#080808] p-6">
       {/* Heading */}
       <div>
         <h2 className="text-3xl font-bold text-white">
@@ -185,8 +422,11 @@ export default function ProfileForm() {
           <img
             src={
               avatarFile
-                ? URL.createObjectURL(avatarFile)
-                : profile?.avatar_url || "/avatar.png"
+                ? URL.createObjectURL(
+                    avatarFile
+                  )
+                : profile?.avatar_url ||
+                  "/avatar.png"
             }
             alt="Profile avatar"
             className="h-full w-full object-cover"
@@ -202,17 +442,25 @@ export default function ProfileForm() {
               type="file"
               accept="image/png,image/jpeg,image/webp"
               onChange={(e) => {
-                const file = e.target.files?.[0];
+                const file =
+                  e.target.files?.[0];
 
-                if (file) {
-                  setAvatarFile(file);
+                if (!file) return;
+
+                if (file.size > 5 * 1024 * 1024) {
+                  alert(
+                    "Avatar must be smaller than 5MB."
+                  );
+                  return;
                 }
+
+                setAvatarFile(file);
               }}
             />
           </label>
 
           <p className="mt-2 text-sm text-slate-400">
-            JPG, PNG or WEBP
+            JPG, PNG or WEBP · Max 5MB
           </p>
         </div>
       </div>
@@ -224,6 +472,7 @@ export default function ProfileForm() {
           placeholder="Full Name"
           value={formData.full_name}
           onChange={handleChange}
+          maxLength={100}
           className="w-full rounded-xl border border-white/5 bg-slate-800 p-4 text-white placeholder:text-slate-500 outline-none transition focus:border-indigo-500"
         />
 
@@ -232,6 +481,7 @@ export default function ProfileForm() {
           placeholder="Username"
           value={formData.username}
           onChange={handleChange}
+          maxLength={50}
           className="w-full rounded-xl border border-white/5 bg-slate-800 p-4 text-white placeholder:text-slate-500 outline-none transition focus:border-indigo-500"
         />
 
@@ -240,6 +490,7 @@ export default function ProfileForm() {
           placeholder="Headline"
           value={formData.headline}
           onChange={handleChange}
+          maxLength={150}
           className="w-full rounded-xl border border-white/5 bg-slate-800 p-4 text-white placeholder:text-slate-500 outline-none transition focus:border-indigo-500"
         />
 
@@ -248,6 +499,7 @@ export default function ProfileForm() {
           placeholder="College"
           value={formData.college}
           onChange={handleChange}
+          maxLength={150}
           className="w-full rounded-xl border border-white/5 bg-slate-800 p-4 text-white placeholder:text-slate-500 outline-none transition focus:border-indigo-500"
         />
 
@@ -256,6 +508,7 @@ export default function ProfileForm() {
           placeholder="Branch"
           value={formData.branch}
           onChange={handleChange}
+          maxLength={100}
           className="w-full rounded-xl border border-white/5 bg-slate-800 p-4 text-white placeholder:text-slate-500 outline-none transition focus:border-indigo-500"
         />
 
@@ -265,11 +518,14 @@ export default function ProfileForm() {
           placeholder="Graduation Year"
           value={formData.graduation_year}
           onChange={handleChange}
+          min={2020}
+          max={2100}
           className="w-full rounded-xl border border-white/5 bg-slate-800 p-4 text-white placeholder:text-slate-500 outline-none transition focus:border-indigo-500"
         />
 
         <input
           name="github_url"
+          type="url"
           placeholder="GitHub URL"
           value={formData.github_url}
           onChange={handleChange}
@@ -278,6 +534,7 @@ export default function ProfileForm() {
 
         <input
           name="linkedin_url"
+          type="url"
           placeholder="LinkedIn URL"
           value={formData.linkedin_url}
           onChange={handleChange}
@@ -286,6 +543,7 @@ export default function ProfileForm() {
 
         <input
           name="portfolio_url"
+          type="url"
           placeholder="Portfolio URL"
           value={formData.portfolio_url}
           onChange={handleChange}
@@ -297,6 +555,7 @@ export default function ProfileForm() {
           placeholder="Location"
           value={formData.location}
           onChange={handleChange}
+          maxLength={150}
           className="w-full rounded-xl border border-white/5 bg-slate-800 p-4 text-white placeholder:text-slate-500 outline-none transition focus:border-indigo-500"
         />
       </div>
@@ -308,6 +567,7 @@ export default function ProfileForm() {
         value={formData.bio}
         onChange={handleChange}
         rows={5}
+        maxLength={1000}
         className="mt-5 w-full resize-none rounded-xl border border-white/5 bg-slate-800 p-4 text-white placeholder:text-slate-500 outline-none transition focus:border-indigo-500"
       />
 
@@ -318,7 +578,9 @@ export default function ProfileForm() {
         disabled={saving}
         className="mt-7 rounded-xl bg-indigo-600 px-8 py-4 font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {saving ? "Saving..." : "Save Changes"}
+        {saving
+          ? "Saving..."
+          : "Save Changes"}
       </button>
     </div>
   );
