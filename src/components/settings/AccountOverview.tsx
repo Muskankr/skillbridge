@@ -1,35 +1,42 @@
+"use client";
+
+import { User } from "lucide-react";
+
 export default function AccountOverview() {
   return (
-    <section className="rounded-3xl border border-white/10 bg-slate-900/60 p-8">
+    <div className="rounded-3xl border border-white/10 bg-zinc-950 p-6 sm:p-8">
 
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
 
-        <div>
+        <div className="flex items-center gap-4">
 
-          <h2 className="text-3xl font-black">
-            Account Overview
-          </h2>
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+            <User className="h-5 w-5 text-zinc-300" />
+          </div>
 
-          <p className="mt-2 text-slate-400">
-            Manage your SkillBridge account and preferences.
-          </p>
+          <div>
+            <h2 className="text-2xl font-bold text-white">
+              Account Overview
+            </h2>
+
+            <p className="mt-1 text-sm text-zinc-400">
+              Manage your SkillBridge account and preferences.
+            </p>
+          </div>
 
         </div>
 
-        <div className="rounded-2xl bg-indigo-600 px-6 py-4">
-
-          <p className="text-sm">
+        <div className="rounded-2xl border border-white/10 bg-white px-6 py-4 text-center">
+          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
             Current Plan
           </p>
 
-          <h3 className="text-2xl font-bold">
+          <p className="mt-1 text-2xl font-black text-black">
             Free
-          </h3>
-
+          </p>
         </div>
 
       </div>
-
-    </section>
+    </div>
   );
 }

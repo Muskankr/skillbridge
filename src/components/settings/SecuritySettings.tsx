@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { X, ShieldCheck } from "lucide-react";
+
 import { supabase } from "@/lib/supabase";
 
 interface Props {
@@ -51,30 +53,44 @@ export default function SecuritySettings({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <div className="w-full max-w-lg rounded-3xl bg-slate-900 p-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm">
 
-        <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-white">
-            Security Settings
-          </h2>
+      <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-zinc-950 p-6 shadow-2xl sm:p-8">
+
+        {/* Header */}
+        <div className="flex items-center justify-between">
+
+          <div className="flex items-center gap-3">
+
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+              <ShieldCheck className="h-5 w-5 text-zinc-300" />
+            </div>
+
+            <h2 className="text-2xl font-bold text-white">
+              Security Settings
+            </h2>
+
+          </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-white"
+            className="rounded-xl p-2 text-zinc-500 transition hover:bg-white/5 hover:text-white"
           >
-            ✕
+            <X className="h-5 w-5" />
           </button>
+
         </div>
 
-        <div className="space-y-5">
+        {/* Inputs */}
+        <div className="mt-8 space-y-4">
 
           <input
             type="password"
             placeholder="New Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl bg-slate-800 p-4 text-white outline-none"
+            className="w-full rounded-xl border border-white/10 bg-zinc-900 px-4 py-3.5 text-white placeholder:text-zinc-600 outline-none transition focus:border-white/30"
           />
 
           <input
@@ -82,15 +98,17 @@ export default function SecuritySettings({
             placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full rounded-xl bg-slate-800 p-4 text-white outline-none"
+            className="w-full rounded-xl border border-white/10 bg-zinc-900 px-4 py-3.5 text-white placeholder:text-zinc-600 outline-none transition focus:border-white/30"
           />
 
         </div>
 
+        {/* Button */}
         <button
+          type="button"
           onClick={handleSave}
           disabled={saving}
-          className="mt-8 w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white transition hover:bg-indigo-500"
+          className="mt-6 w-full rounded-xl bg-white py-3.5 font-bold text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {saving ? "Updating..." : "Update Password"}
         </button>

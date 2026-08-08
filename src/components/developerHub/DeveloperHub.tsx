@@ -1,72 +1,86 @@
+"use client";
+
 import StatsCard from "./StatsCard";
 import SkillCard from "./SkillCard";
 import RoadmapCard from "./RoadmapCard";
 import GithubCard from "../github/GithubCard";
+
 import { useDeveloperHub } from "@/features/developerHub/hooks/useDeveloperHub";
 
 export default function DeveloperHub() {
   const { data, loading } = useDeveloperHub();
 
-if (loading) {
-  return (
-    <div className="text-center text-white py-20">
-      Loading Developer Hub...
-    </div>
-  );
-}
+  if (loading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <p className="text-sm text-zinc-500">
+          Loading Developer Hub...
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
+      {/* Header */}
+      <section>
+        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-zinc-600">
+          Developer Workspace
+        </p>
 
-      <div>
-
-        <h1 className="text-4xl font-bold text-white">
+        <h1 className="mt-3 text-4xl font-bold tracking-tight text-white md:text-5xl">
           Developer Hub
         </h1>
 
-        <p className="mt-2 text-slate-400">
-          Track your coding growth and learning roadmap.
+        <p className="mt-3 max-w-2xl text-zinc-500">
+          Track your coding growth, skills, projects and
+          learning roadmap in one place.
         </p>
-
-      </div>
+      </section>
 
       {/* Stats */}
-
-      <div className="grid gap-6 md:grid-cols-4">
+      <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <StatsCard
+          title="Total XP"
+          value={data.totalXP}
+        />
 
         <StatsCard
-  title="XP"
-  value={data.totalXP}
-/>
+          title="Projects"
+          value={data.projectCount}
+        />
 
         <StatsCard
-  title="Projects"
-  value={data.projectCount}
-/>
+          title="Certificates"
+          value={data.certificateCount}
+        />
 
         <StatsCard
-  title="Certificates"
-  value={data.certificateCount}
-/>
+          title="Current Level"
+          value={data.level}
+        />
+      </section>
 
-        <StatsCard
-  title="Level"
-  value={data.level}
-/>
-
-      </div>
-      <GithubCard githubUrl={data.profile?.github_url} />
+      {/* GitHub */}
+      <section>
+        <GithubCard
+          githubUrl={data.profile?.github_url}
+        />
+      </section>
 
       {/* Skills */}
+      <section>
+        <div className="mb-5">
+          <h2 className="text-2xl font-bold text-white">
+            Skill Progress
+          </h2>
 
-      <div>
+          <p className="mt-1 text-sm text-zinc-500">
+            Track your progress across important technologies.
+          </p>
+        </div>
 
-        <h2 className="mb-5 text-2xl font-bold text-white">
-          Skill Progress
-        </h2>
-
-        <div className="space-y-5">
-
+        <div className="space-y-4">
           <SkillCard
             name="React"
             progress={85}
@@ -86,21 +100,23 @@ if (loading) {
             name="Machine Learning"
             progress={60}
           />
-
         </div>
-
-      </div>
+      </section>
 
       {/* Roadmap */}
+      <section>
+        <div className="mb-5">
+          <h2 className="text-2xl font-bold text-white">
+            Learning Roadmap
+          </h2>
 
-      <div>
+          <p className="mt-1 text-sm text-zinc-500">
+            Follow your learning journey and complete
+            the next milestones.
+          </p>
+        </div>
 
-        <h2 className="mb-5 text-2xl font-bold text-white">
-          Learning Roadmap
-        </h2>
-
-        <div className="space-y-4">
-
+        <div className="space-y-3">
           <RoadmapCard
             title="HTML & CSS"
             completed={true}
@@ -125,11 +141,8 @@ if (loading) {
             title="System Design"
             completed={false}
           />
-
         </div>
-
-      </div>
-
+      </section>
     </div>
   );
 }

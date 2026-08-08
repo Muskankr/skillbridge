@@ -5,29 +5,11 @@ export async function getSettings(userId: string) {
     .from("user_settings")
     .select("*")
     .eq("user_id", userId)
-    .maybeSingle();
+    .single();
 
   if (error) {
-    console.error(error);
+    console.error("Error loading settings:", error);
     return null;
-  }
-
-  // Create default settings if none exist
-  if (!data) {
-    const { data: inserted, error: insertError } = await supabase
-      .from("user_settings")
-      .insert({
-        user_id: userId,
-      })
-      .select()
-      .single();
-
-    if (insertError) {
-      console.error(insertError);
-      return null;
-    }
-
-    return inserted;
   }
 
   return data;
@@ -35,14 +17,19 @@ export async function getSettings(userId: string) {
 
 export async function updateSettings(
   userId: string,
-  values: Record<string, unknown>
+  settings: Record<string, any>
 ) {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("user_settings")
-    .update(values)
-    .eq("user_id", userId);
+    .update(settings)
+    .eq("user_id", userId)
+    .select()
+    .single();
 
   if (error) {
-    console.error(error);
+    console.error("Error updating settings:", error);
+    throw error;
   }
+
+  return data;
 }

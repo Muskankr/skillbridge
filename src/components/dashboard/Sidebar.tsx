@@ -22,7 +22,6 @@ export default function Sidebar({
   const pathname = usePathname();
 
   const { user } = useAuth();
-
   const { profile, loading } = useProfile();
 
   const initial =
@@ -31,119 +30,131 @@ export default function Sidebar({
   return (
     <>
       {/* Mobile Overlay */}
-
       {open && (
         <div
           onClick={() => setOpen(false)}
-          className="fixed inset-0 z-40 bg-black/60 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden"
         />
       )}
 
-      {/* Sidebar */}
-
       <aside
         className={`
-        fixed top-0 left-0 z-50
-        flex h-screen w-72 flex-col
-        border-r border-white/10
-        bg-slate-950
-        transition-transform duration-300
-
-        ${
-          open
-            ? "translate-x-0"
-            : "-translate-x-full"
-        }
-
-        lg:translate-x-0
-      `}
+          fixed inset-y-0 left-0 z-50
+          flex w-72 flex-col
+          border-r border-[#262626]
+          bg-black
+          transition-transform duration-300
+          ${
+            open
+              ? "translate-x-0"
+              : "-translate-x-full"
+          }
+          lg:translate-x-0
+        `}
       >
-        {/* Mobile Header */}
-
-        <div className="flex items-center justify-between border-b border-white/10 p-6 lg:hidden">
-          <h1 className="text-2xl font-black text-white">
+        {/* Header */}
+        <div className="flex h-20 items-center justify-between border-b border-[#262626] px-7">
+          <Link
+            href="/dashboard"
+            onClick={() => setOpen(false)}
+            className="text-2xl font-bold tracking-tight text-white"
+          >
             SkillBridge
-          </h1>
+          </Link>
 
           <button
             onClick={() => setOpen(false)}
-            className="rounded-lg p-2 hover:bg-white/10"
+            className="rounded-lg p-2 text-zinc-500 transition hover:bg-[#111] hover:text-white lg:hidden"
+            aria-label="Close sidebar"
           >
-            <X className="h-6 w-6 text-white" />
+            <X size={20} />
           </button>
         </div>
 
-        {/* Desktop Header */}
-
-        <div className="hidden border-b border-white/10 px-8 py-8 lg:block">
-          <h1 className="text-3xl font-black text-white">
-            SkillBridge
-          </h1>
-        </div>
-
         {/* User */}
-
-        <div className="border-b border-white/10 px-6 py-6">
-          <div className="flex items-center gap-4">
+        <div className="border-b border-[#262626] px-6 py-6">
+          <div className="flex items-center gap-3">
             {profile?.avatar_url ? (
               <img
                 src={profile.avatar_url}
                 alt="Avatar"
-                className="h-14 w-14 rounded-full border-2 border-violet-500 object-cover"
+                className="h-10 w-10 rounded-full border border-[#444] object-cover"
               />
             ) : (
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-violet-600 text-xl font-bold text-white">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#333] bg-[#111] text-sm font-semibold text-white">
                 {initial}
               </div>
             )}
 
             <div className="min-w-0">
-              <h2 className="truncate font-semibold text-white">
+              <p className="truncate text-sm font-medium text-white">
                 {loading
                   ? "Loading..."
                   : profile?.full_name || "Developer"}
-              </h2>
+              </p>
 
-              <p className="truncate text-sm text-slate-400">
+              <p className="truncate text-xs text-zinc-500">
                 {profile?.headline ||
                   profile?.college ||
-                  user?.email}
+                  user?.email ||
+                  "Developer"}
               </p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto px-4 py-5">
+          <p className="mb-3 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-600">
+            Workspace
+          </p>
 
-        <nav className="flex-1 overflow-y-auto p-5">
-          {dashboardLinks.map((item) => {
-            const Icon = item.icon;
+          <div className="space-y-1">
+            {dashboardLinks.map((item) => {
+              const Icon = item.icon;
 
-            const active = pathname === item.href;
+              const active =
+                pathname === item.href ||
+                pathname.startsWith(`${item.href}/`);
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className={`mb-2 flex items-center gap-4 rounded-xl px-5 py-4 transition ${
-                  active
-                    ? "bg-violet-600 text-white"
-                    : "text-slate-300 hover:bg-violet-600/20 hover:text-white"
-                }`}
-              >
-                <Icon size={22} />
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className={`
+                    group flex items-center gap-3
+                    rounded-lg px-3 py-2.5
+                    text-sm font-medium
+                    transition
+                    ${
+                      active
+                        ? "border border-[#333] bg-[#111] text-white"
+                        : "border border-transparent text-zinc-500 hover:bg-[#0d0d0d] hover:text-zinc-200"
+                    }
+                  `}
+                >
+                  <Icon
+                    size={18}
+                    className={
+                      active
+                        ? "text-white"
+                        : "text-zinc-600 transition group-hover:text-zinc-300"
+                    }
+                  />
 
-                <span>{item.title}</span>
-              </Link>
-            );
-          })}
+                  <span>{item.title}</span>
+                </Link>
+              );
+            })}
+          </div>
         </nav>
 
         {/* Logout */}
-
-        <div className="border-t border-white/10 p-5">
-          <LogoutButton />
+        <div className="border-t border-[#262626] p-4">
+          <div className="rounded-lg">
+            <LogoutButton />
+          </div>
         </div>
       </aside>
     </>

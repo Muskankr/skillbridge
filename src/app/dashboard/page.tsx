@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
+
 import {
   getStreak,
   updateStreak,
@@ -26,14 +27,12 @@ export default function DashboardPage() {
     longest_streak: 1,
   });
 
-  // Redirect if not logged in
   useEffect(() => {
     if (!loading && !user) {
       router.replace("/login");
     }
   }, [loading, user, router]);
 
-  // Load streak after login
   useEffect(() => {
     async function loadStreak() {
       if (!user) return;
@@ -50,7 +49,10 @@ export default function DashboardPage() {
           });
         }
       } catch (error) {
-        console.error("Failed to load streak:", error);
+        console.error(
+          "Failed to load streak:",
+          error
+        );
       }
     }
 
@@ -61,31 +63,57 @@ export default function DashboardPage() {
 
   if (loading || !user) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-950 text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-sm text-zinc-500">
         Loading Dashboard...
-      </main>
+      </div>
     );
   }
 
   return (
     <DashboardLayout>
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Left Side */}
-        <div className="space-y-8 lg:col-span-2">
-          <CareerScore />
-          <OverviewCards />
-          <QuickActions />
-          <RecentActivity />
+      <div className="space-y-8">
+
+        {/* Header */}
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-600">
+            Overview
+          </p>
+
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight text-white">
+            Your Developer Dashboard
+          </h2>
+
+          <p className="mt-2 text-sm text-zinc-500">
+            Track your progress, build your profile and
+            keep moving forward.
+          </p>
         </div>
 
-        {/* Right Side */}
-        <div className="space-y-6">
-          <LevelCard />
+        {/* Main grid */}
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
 
-          <StreakCard
-            streak={streak.streak}
-            longestStreak={streak.longest_streak}
-          />
+          {/* Left */}
+          <div className="space-y-6">
+            <CareerScore />
+
+            <OverviewCards />
+
+            <QuickActions />
+
+            <RecentActivity />
+          </div>
+
+          {/* Right */}
+          <div className="space-y-6">
+            <LevelCard />
+
+            <StreakCard
+              streak={streak.streak}
+              longestStreak={
+                streak.longest_streak
+              }
+            />
+          </div>
         </div>
       </div>
     </DashboardLayout>

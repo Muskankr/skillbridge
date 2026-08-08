@@ -5,28 +5,30 @@ export default function Features() {
   return (
     <section
       id="features"
-      className="py-28"
+      className="border-b border-[#262626] bg-black"
     >
-      <Container>
+      <Container className="py-28 sm:py-32">
 
+        {/* Heading */}
         <div className="mx-auto max-w-3xl text-center">
 
-          <p className="text-indigo-400 font-semibold tracking-[0.35em] uppercase">
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-zinc-500">
             Features
           </p>
 
-          <h2 className="mt-5 text-5xl font-black">
+          <h2 className="mt-5 text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Everything You Need
           </h2>
 
-          <p className="mt-6 text-slate-400 text-lg">
+          <p className="mt-6 text-lg leading-8 text-zinc-400">
             Everything required to build an impressive developer profile
             from one modern platform.
           </p>
 
         </div>
 
-        <div className="mt-20 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
+        {/* Feature Grid */}
+        <div className="mt-20 grid overflow-hidden rounded-2xl border border-[#2a2a2a] bg-[#0a0a0a] md:grid-cols-2 xl:grid-cols-4">
 
           {features.map((feature) => {
             const Icon = feature.icon;
@@ -34,19 +36,21 @@ export default function Features() {
             return (
               <div
                 key={feature.title}
-                className="group rounded-3xl border border-white/10 bg-white/[0.03] p-8 transition duration-300 hover:-translate-y-2 hover:border-indigo-500/50 hover:bg-white/[0.05]"
+                className="group border-b border-[#242424] p-8 transition hover:bg-[#111111] md:border-r xl:border-b-0"
               >
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-600/15 text-indigo-400">
-                  <Icon size={32} />
+
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#333333] bg-black text-zinc-300 transition group-hover:border-[#555555] group-hover:text-white">
+                  <Icon size={20} />
                 </div>
 
-                <h3 className="mt-8 text-2xl font-bold">
+                <h3 className="mt-7 text-lg font-semibold text-white">
                   {feature.title}
                 </h3>
 
-                <p className="mt-4 leading-7 text-slate-400">
+                <p className="mt-3 text-sm leading-7 text-zinc-500">
                   {feature.description}
                 </p>
+
               </div>
             );
           })}

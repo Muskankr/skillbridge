@@ -2,24 +2,28 @@ import Container from "./Container";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 py-10">
-      <Container className="flex flex-col items-center justify-between gap-4 md:flex-row">
+    <footer className="border-t border-[#262626] bg-black">
+
+      <Container className="flex flex-col gap-4 py-10 sm:flex-row sm:items-center sm:justify-between">
 
         <div>
-          <h2 className="text-2xl font-bold">
+
+          <h2 className="text-xl font-semibold text-white">
             SkillBridge
           </h2>
 
-          <p className="text-slate-400 mt-2">
+          <p className="mt-1 text-sm text-zinc-600">
             Build your developer identity.
           </p>
+
         </div>
 
-        <p className="text-slate-500 text-sm">
+        <p className="text-sm text-zinc-600">
           © 2026 SkillBridge. All rights reserved.
         </p>
 
       </Container>
+
     </footer>
   );
 }

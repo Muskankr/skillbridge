@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { X, Shield } from "lucide-react";
+
 import { supabase } from "@/lib/supabase";
+
 import {
   getSettings,
   updateSettings,
@@ -12,10 +15,19 @@ interface Props {
   onClose: () => void;
 }
 
-export default function PrivacySettings({ open, onClose }: Props) {
+interface PrivacyState {
+  profile_public: boolean;
+  show_streak: boolean;
+  show_leaderboard: boolean;
+}
+
+export default function PrivacySettings({
+  open,
+  onClose,
+}: Props) {
   const [userId, setUserId] = useState("");
 
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<PrivacyState>({
     profile_public: true,
     show_streak: true,
     show_leaderboard: true,
@@ -24,9 +36,9 @@ export default function PrivacySettings({ open, onClose }: Props) {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    async function load() {
-      if (!open) return;
+    if (!open) return;
 
+    async function loadSettings() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -40,118 +52,172 @@ export default function PrivacySettings({ open, onClose }: Props) {
       if (!data) return;
 
       setSettings({
-        profile_public: data.profile_public,
-        show_streak: data.show_streak,
-        show_leaderboard: data.show_leaderboard,
+        profile_public: data.profile_public ?? true,
+        show_streak: data.show_streak ?? true,
+        show_leaderboard: data.show_leaderboard ?? true,
       });
     }
 
-    load();
+    loadSettings();
   }, [open]);
 
   async function save() {
+    if (!userId) {
+      alert("User not found.");
+      return;
+    }
+
     setSaving(true);
 
-    await updateSettings(userId, settings);
+    try {
+      await updateSettings(userId, settings);
 
-    setSaving(false);
-    onClose();
+      alert("Privacy settings updated successfully!");
+
+      onClose();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update privacy settings.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <div className="w-full max-w-lg rounded-3xl bg-slate-900 p-8">
-        <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-white">
-            Privacy Settings
-          </h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm">
+
+      <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-zinc-950 p-6 shadow-2xl sm:p-8">
+
+        {/* Header */}
+        <div className="flex items-center justify-between">
+
+          <div className="flex items-center gap-3">
+
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+              <Shield className="h-5 w-5 text-zinc-300" />
+            </div>
+
+            <h2 className="text-2xl font-bold text-white">
+              Privacy Settings
+            </h2>
+
+          </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-white"
+            className="rounded-xl p-2 text-zinc-500 transition hover:bg-white/5 hover:text-white"
           >
-            ✕
+            <X className="h-5 w-5" />
           </button>
+
         </div>
 
-        <div className="space-y-6">
+        {/* Options */}
+        <div className="mt-8 space-y-3">
 
           <Toggle
             label="Public Profile"
+            description="Allow other people to view your profile."
             value={settings.profile_public}
-            onChange={(v) =>
-              setSettings({
-                ...settings,
-                profile_public: v,
-              })
+            onChange={(value) =>
+              setSettings((prev) => ({
+                ...prev,
+                profile_public: value,
+              }))
             }
           />
 
           <Toggle
             label="Show Streak"
+            description="Show your coding streak on your public profile."
             value={settings.show_streak}
-            onChange={(v) =>
-              setSettings({
-                ...settings,
-                show_streak: v,
-              })
+            onChange={(value) =>
+              setSettings((prev) => ({
+                ...prev,
+                show_streak: value,
+              }))
             }
           />
 
           <Toggle
             label="Show Leaderboard"
+            description="Allow your profile to appear on the leaderboard."
             value={settings.show_leaderboard}
-            onChange={(v) =>
-              setSettings({
-                ...settings,
-                show_leaderboard: v,
-              })
+            onChange={(value) =>
+              setSettings((prev) => ({
+                ...prev,
+                show_leaderboard: value,
+              }))
             }
           />
 
         </div>
 
+        {/* Save */}
         <button
+          type="button"
           onClick={save}
           disabled={saving}
-          className="mt-8 w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white hover:bg-indigo-500"
+          className="mt-6 w-full rounded-xl bg-white py-3.5 font-bold text-black transition hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {saving ? "Saving..." : "Save Changes"}
         </button>
+
       </div>
     </div>
   );
 }
 
+/* Toggle */
+
 interface ToggleProps {
   label: string;
+  description: string;
   value: boolean;
   onChange: (value: boolean) => void;
 }
 
 function Toggle({
   label,
+  description,
   value,
   onChange,
 }: ToggleProps) {
   return (
-    <div className="flex items-center justify-between rounded-xl bg-slate-800 p-4">
-      <p className="text-white">{label}</p>
+    <div className="flex items-center justify-between gap-5 rounded-2xl border border-white/10 bg-zinc-900 p-4">
+
+      <div>
+        <h3 className="font-semibold text-white">
+          {label}
+        </h3>
+
+        <p className="mt-1 text-sm leading-5 text-zinc-500">
+          {description}
+        </p>
+      </div>
 
       <button
+        type="button"
         onClick={() => onChange(!value)}
-        className={`h-7 w-14 rounded-full transition ${
-          value ? "bg-indigo-600" : "bg-slate-600"
+        aria-pressed={value}
+        className={`relative h-7 w-14 shrink-0 rounded-full transition-colors duration-200 ${
+          value
+            ? "bg-white"
+            : "bg-zinc-700"
         }`}
       >
-        <div
-          className={`h-6 w-6 rounded-full bg-white transition ${
-            value ? "translate-x-7" : "translate-x-0"
+        <span
+          className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full shadow-md transition-transform duration-200 ${
+            value
+              ? "translate-x-7 bg-black"
+              : "translate-x-0 bg-zinc-400"
           }`}
         />
       </button>
+
     </div>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Bell, Mail, Smartphone, Trophy, Clock, X } from "lucide-react";
+
 import { supabase } from "@/lib/supabase";
 import {
   getSettings,
@@ -12,25 +14,32 @@ interface Props {
   onClose: () => void;
 }
 
+interface NotificationState {
+  email_notifications: boolean;
+  push_notifications: boolean;
+  achievement_notifications: boolean;
+  daily_reminder: boolean;
+}
+
 export default function NotificationSettings({
   open,
   onClose,
 }: Props) {
   const [userId, setUserId] = useState("");
-
-  const [settings, setSettings] = useState({
-    email_notifications: true,
-    push_notifications: true,
-    achievement_notifications: true,
-    daily_reminder: true,
-  });
-
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    async function load() {
-      if (!open) return;
+  const [settings, setSettings] =
+    useState<NotificationState>({
+      email_notifications: true,
+      push_notifications: true,
+      achievement_notifications: true,
+      daily_reminder: true,
+    });
 
+  useEffect(() => {
+    if (!open) return;
+
+    async function loadSettings() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -44,132 +53,229 @@ export default function NotificationSettings({
       if (!data) return;
 
       setSettings({
-        email_notifications: data.email_notifications,
-        push_notifications: data.push_notifications,
-        achievement_notifications: data.achievement_notifications,
-        daily_reminder: data.daily_reminder,
+        email_notifications:
+          data.email_notifications ?? true,
+
+        push_notifications:
+          data.push_notifications ?? true,
+
+        achievement_notifications:
+          data.achievement_notifications ?? true,
+
+        daily_reminder:
+          data.daily_reminder ?? true,
       });
     }
 
-    load();
+    loadSettings();
   }, [open]);
 
   async function save() {
+    if (!userId) {
+      alert("User not found.");
+      return;
+    }
+
     setSaving(true);
 
-    await updateSettings(userId, settings);
+    try {
+      await updateSettings(userId, settings);
 
-    setSaving(false);
+      alert("Notification settings updated successfully!");
 
-    onClose();
+      onClose();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update notification settings.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <div className="w-full max-w-lg rounded-3xl bg-slate-900 p-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm">
 
-        <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-white">
-            Notification Settings
-          </h2>
+      {/* Modal */}
+      <div className="w-full max-w-xl rounded-3xl border border-white/10 bg-black p-6 shadow-2xl sm:p-8">
+
+        {/* Header */}
+        <div className="flex items-start justify-between">
+
+          <div className="flex items-center gap-4">
+
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5">
+              <Bell className="h-6 w-6 text-violet-400" />
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-white">
+                Notifications
+              </h2>
+
+              <p className="mt-1 text-sm text-zinc-500">
+                Manage how SkillBridge keeps you updated.
+              </p>
+            </div>
+
+          </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-xl text-zinc-500 transition hover:bg-white/5 hover:text-white"
           >
-            ✕
+            <X className="h-5 w-5" />
           </button>
+
         </div>
 
-        <div className="space-y-6">
+        {/* Divider */}
+        <div className="my-7 h-px bg-white/10" />
 
-          <Toggle
+        {/* Settings */}
+        <div className="space-y-3">
+
+          <NotificationToggle
+            icon={<Mail className="h-5 w-5" />}
             label="Email Notifications"
+            description="Receive important updates and account notifications."
             value={settings.email_notifications}
-            onChange={(v) =>
-              setSettings({
-                ...settings,
-                email_notifications: v,
-              })
+            onChange={(value) =>
+              setSettings((prev) => ({
+                ...prev,
+                email_notifications: value,
+              }))
             }
           />
 
-          <Toggle
+          <NotificationToggle
+            icon={<Smartphone className="h-5 w-5" />}
             label="Push Notifications"
+            description="Receive notifications directly inside SkillBridge."
             value={settings.push_notifications}
-            onChange={(v) =>
-              setSettings({
-                ...settings,
-                push_notifications: v,
-              })
+            onChange={(value) =>
+              setSettings((prev) => ({
+                ...prev,
+                push_notifications: value,
+              }))
             }
           />
 
-          <Toggle
+          <NotificationToggle
+            icon={<Trophy className="h-5 w-5" />}
             label="Achievement Notifications"
+            description="Get notified when you unlock XP, levels or achievements."
             value={settings.achievement_notifications}
-            onChange={(v) =>
-              setSettings({
-                ...settings,
-                achievement_notifications: v,
-              })
+            onChange={(value) =>
+              setSettings((prev) => ({
+                ...prev,
+                achievement_notifications: value,
+              }))
             }
           />
 
-          <Toggle
+          <NotificationToggle
+            icon={<Clock className="h-5 w-5" />}
             label="Daily Reminder"
+            description="Receive a reminder to continue your developer journey."
             value={settings.daily_reminder}
-            onChange={(v) =>
-              setSettings({
-                ...settings,
-                daily_reminder: v,
-              })
+            onChange={(value) =>
+              setSettings((prev) => ({
+                ...prev,
+                daily_reminder: value,
+              }))
             }
           />
 
         </div>
 
+        {/* Save Button */}
         <button
+          type="button"
           onClick={save}
           disabled={saving}
-          className="mt-8 w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white hover:bg-indigo-500"
+          className="mt-7 w-full rounded-xl bg-violet-600 py-3.5 font-semibold text-white transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {saving ? "Saving..." : "Save Changes"}
         </button>
+
       </div>
     </div>
   );
 }
 
-interface ToggleProps {
+/* =====================================================
+   NOTIFICATION TOGGLE
+===================================================== */
+
+interface NotificationToggleProps {
+  icon: React.ReactNode;
   label: string;
+  description: string;
   value: boolean;
   onChange: (value: boolean) => void;
 }
 
-function Toggle({
+function NotificationToggle({
+  icon,
   label,
+  description,
   value,
   onChange,
-}: ToggleProps) {
+}: NotificationToggleProps) {
   return (
-    <div className="flex items-center justify-between rounded-xl bg-slate-800 p-4">
-      <p className="text-white">{label}</p>
+    <div className="flex items-center justify-between gap-5 rounded-2xl border border-white/10 bg-zinc-950 p-4 transition hover:border-white/20">
 
+      {/* Left */}
+      <div className="flex min-w-0 items-center gap-4">
+
+        <div
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition ${
+            value
+              ? "bg-violet-500/10 text-violet-400"
+              : "bg-white/5 text-zinc-500"
+          }`}
+        >
+          {icon}
+        </div>
+
+        <div className="min-w-0">
+
+          <h3 className="font-semibold text-white">
+            {label}
+          </h3>
+
+          <p className="mt-1 text-sm leading-5 text-zinc-500">
+            {description}
+          </p>
+
+        </div>
+
+      </div>
+
+      {/* Toggle */}
       <button
+        type="button"
         onClick={() => onChange(!value)}
-        className={`h-7 w-14 rounded-full transition ${
-          value ? "bg-indigo-600" : "bg-slate-600"
+        aria-label={`Toggle ${label}`}
+        aria-pressed={value}
+        className={`relative h-7 w-14 shrink-0 rounded-full transition-colors duration-200 ${
+          value
+            ? "bg-violet-600"
+            : "bg-zinc-700"
         }`}
       >
-        <div
-          className={`h-6 w-6 rounded-full bg-white transition ${
-            value ? "translate-x-7" : "translate-x-0"
+        <span
+          className={`absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform duration-200 ${
+            value
+              ? "translate-x-7"
+              : "translate-x-0"
           }`}
         />
       </button>
+
     </div>
   );
 }

@@ -3,13 +3,14 @@ import {
   User,
   FolderKanban,
   Award,
-  Trophy,
   Code2,
   FileText,
-  Settings,
-  Sparkles,
+  Zap,
   Target,
-  Brain,
+  Trophy,
+  Bot,
+  Settings,
+  Medal,
 } from "lucide-react";
 
 export const dashboardLinks = [
@@ -34,6 +35,11 @@ export const dashboardLinks = [
     icon: Award,
   },
   {
+    title: "Achievements",
+    href: "/achievements",
+    icon: Medal,
+  },
+  {
     title: "Developer Hub",
     href: "/developer-hub",
     icon: Code2,
@@ -46,7 +52,7 @@ export const dashboardLinks = [
   {
     title: "XP System",
     href: "/xp",
-    icon: Sparkles,
+    icon: Zap,
   },
   {
     title: "Daily Challenges",
@@ -61,7 +67,7 @@ export const dashboardLinks = [
   {
     title: "AI Toolkit",
     href: "/ai-toolkit",
-    icon: Brain,
+    icon: Bot,
   },
   {
     title: "Settings",

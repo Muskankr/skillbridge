@@ -7,30 +7,29 @@ export default function SkillCard({
   name,
   progress,
 }: Props) {
+  const safeProgress = Math.min(
+    Math.max(progress, 0),
+    100
+  );
+
   return (
-    <div className="rounded-xl bg-slate-900 border border-white/10 p-5">
-
-      <div className="flex justify-between">
-
-        <span className="text-white">
+    <div className="rounded-2xl border border-[#262626] bg-[#050505] p-5">
+      <div className="flex items-center justify-between">
+        <span className="font-medium text-white">
           {name}
         </span>
 
-        <span className="text-indigo-400">
-          {progress}%
+        <span className="text-sm font-semibold text-zinc-400">
+          {safeProgress}%
         </span>
-
       </div>
 
-      <div className="mt-3 h-3 rounded-full bg-slate-700">
-
+      <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#1a1a1a]">
         <div
-          style={{ width: `${progress}%` }}
-          className="h-3 rounded-full bg-indigo-500"
+          style={{ width: `${safeProgress}%` }}
+          className="h-full rounded-full bg-white transition-all duration-500"
         />
-
       </div>
-
     </div>
   );
 }

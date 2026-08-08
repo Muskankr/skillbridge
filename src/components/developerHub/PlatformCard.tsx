@@ -13,38 +13,59 @@ interface Props {
 export default function PlatformCard({
   platform,
 }: Props) {
-
   const Icon = platform.icon;
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-slate-900/50 p-6 transition hover:border-indigo-500">
+    <div className="rounded-2xl border border-[#262626] bg-[#050505] p-6 transition hover:border-[#3a3a3a]">
 
+      {/* Platform */}
       <div className="flex items-center gap-4">
 
-        <Icon className={`h-8 w-8 ${platform.color}`} />
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#262626] bg-[#111]">
+          <Icon className="h-6 w-6 text-zinc-300" />
+        </div>
 
-        <div>
-
-          <h2 className="text-xl font-bold">
+        <div className="min-w-0">
+          <h2 className="text-xl font-bold text-white">
             {platform.name}
           </h2>
 
-          <p className="text-slate-400">
+          <p className="mt-1 truncate text-sm text-zinc-500">
             {platform.connected
               ? platform.username
               : "Not Connected"}
           </p>
-
         </div>
 
       </div>
 
-      <button className="mt-8 w-full rounded-xl bg-indigo-600 py-3 font-semibold hover:bg-indigo-500">
+      {/* Connection Status */}
+      <div className="mt-6 flex items-center gap-2">
 
+        <span
+          className={`h-2 w-2 rounded-full ${
+            platform.connected
+              ? "bg-white"
+              : "bg-zinc-700"
+          }`}
+        />
+
+        <span className="text-xs font-medium text-zinc-500">
+          {platform.connected
+            ? "Connected"
+            : "Not Connected"}
+        </span>
+
+      </div>
+
+      {/* Button */}
+      <button
+        type="button"
+        className="mt-6 w-full rounded-xl border border-[#333] bg-white py-3 font-semibold text-black transition hover:bg-zinc-200"
+      >
         {platform.connected
           ? "View Profile"
           : "Connect"}
-
       </button>
 
     </div>

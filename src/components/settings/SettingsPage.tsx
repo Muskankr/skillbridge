@@ -6,13 +6,11 @@ import { settings } from "@/constants/settings";
 
 import AccountOverview from "./AccountOverview";
 import SettingsCard from "./SettingsCard";
-
 import NotificationSettings from "./NotificationSettings";
 import PrivacySettings from "./PrivacySettings";
-
 import AppearanceSettings from "./AppearanceSettings";
-
 import SecuritySettings from "./SecuritySettings";
+import DangerZoneSettings from "./DangerZoneSettings";
 
 export default function SettingsPage() {
   const [activeModal, setActiveModal] = useState<string | null>(null);
@@ -26,30 +24,40 @@ export default function SettingsPage() {
   }
 
   return (
-    <>
-      <main className="space-y-10">
-        <div>
-          <h1 className="text-4xl font-black text-white">
-            Settings
-          </h1>
+    <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 
-          <p className="mt-3 text-slate-400">
-            Manage your account, preferences and privacy.
-          </p>
-        </div>
+      {/* Header */}
+      <section>
+        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-zinc-500">
+          SETTINGS
+        </p>
 
+        <h1 className="mt-3 text-4xl font-black tracking-tight text-white sm:text-5xl">
+          Manage your workspace
+        </h1>
+
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400 sm:text-base">
+          Manage your account, preferences, privacy and security.
+        </p>
+      </section>
+
+      {/* Account Overview */}
+      <section className="mt-8">
         <AccountOverview />
+      </section>
 
-        <section className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-          {settings.map((setting) => (
-            <SettingsCard
-              key={setting.id}
-              setting={setting}
-              onOpen={() => handleOpen(setting.id)}
-            />
-          ))}
-        </section>
-      </main>
+      {/* Settings */}
+      <section className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        {settings.map((setting) => (
+          <SettingsCard
+            key={setting.id}
+            setting={setting}
+            onOpen={() => handleOpen(setting.id)}
+          />
+        ))}
+      </section>
+
+      {/* Modals */}
 
       <NotificationSettings
         open={activeModal === "notifications"}
@@ -62,15 +70,19 @@ export default function SettingsPage() {
       />
 
       <AppearanceSettings
-  open={activeModal === "appearance"}
-  onClose={handleClose}
-/>
+        open={activeModal === "appearance"}
+        onClose={handleClose}
+      />
 
-<SecuritySettings
-  open={activeModal === "security"}
-  onClose={handleClose}
-/>
+      <SecuritySettings
+        open={activeModal === "security"}
+        onClose={handleClose}
+      />
 
-    </>
+      <DangerZoneSettings
+        open={activeModal === "danger"}
+        onClose={handleClose}
+      />
+    </main>
   );
 }

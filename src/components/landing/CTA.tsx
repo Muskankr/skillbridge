@@ -3,39 +3,40 @@ import Container from "@/components/layout/Container";
 
 export default function CTA() {
   return (
-    <section className="py-32">
-      <Container>
+    <section className="bg-black">
 
-        <div className="overflow-hidden rounded-[40px] border border-indigo-500/20 bg-gradient-to-r from-indigo-600/20 via-slate-900 to-purple-600/20 p-14 text-center">
+      <Container className="py-28 sm:py-32">
 
-          <p className="uppercase tracking-[0.4em] text-indigo-400 font-semibold">
-            START TODAY
+        <div className="rounded-2xl border border-[#333333] bg-[#080808] px-6 py-20 text-center sm:px-12">
+
+          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-zinc-500">
+            Start Today
           </p>
 
-          <h2 className="mt-6 text-5xl font-black leading-tight">
+          <h2 className="mx-auto mt-6 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
             Build Your Developer Identity.
             <br />
             Impress Every Recruiter.
           </h2>
 
-          <p className="mx-auto mt-8 max-w-2xl text-lg leading-8 text-slate-300">
-            Join SkillBridge and create one beautiful profile
-            that showcases your projects, certificates,
-            coding profiles and achievements.
+          <p className="mx-auto mt-7 max-w-2xl text-base leading-7 text-zinc-400 sm:text-lg">
+            Join SkillBridge and create one professional profile
+            that showcases your projects, certificates, coding
+            profiles and achievements.
           </p>
 
-          <div className="mt-12 flex flex-wrap justify-center gap-5">
+          <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
 
             <Link
               href="/login"
-              className="rounded-xl bg-indigo-600 px-8 py-4 text-lg font-semibold transition hover:bg-indigo-500"
+              className="rounded-lg bg-white px-8 py-3.5 font-semibold text-black transition hover:bg-zinc-200"
             >
               Create Free Profile
             </Link>
 
             <Link
               href="#features"
-              className="rounded-xl border border-white/10 px-8 py-4 text-lg transition hover:bg-white/5"
+              className="rounded-lg border border-[#333333] bg-black px-8 py-3.5 font-semibold text-white transition hover:border-white hover:bg-[#111111]"
             >
               Explore Features
             </Link>
@@ -45,6 +46,7 @@ export default function CTA() {
         </div>
 
       </Container>
+
     </section>
   );
 }

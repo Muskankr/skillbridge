@@ -1,136 +1,128 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
-import {
-  getSettings,
-  updateSettings,
-} from "@/features/settings/settingsService";
+import { X, Palette } from "lucide-react";
 
 interface Props {
   open: boolean;
   onClose: () => void;
 }
 
-type Theme = "dark" | "light" | "system";
+type Theme = "dark" | "light";
 
 export default function AppearanceSettings({
   open,
   onClose,
 }: Props) {
-  const [userId, setUserId] = useState("");
   const [theme, setTheme] = useState<Theme>("dark");
-  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    async function load() {
-      if (!open) return;
+    const savedTheme = localStorage.getItem("skillbridge-theme");
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) return;
-
-      setUserId(user.id);
-
-      const data = await getSettings(user.id);
-
-      if (!data) return;
-
-      setTheme((data.theme as Theme) || "dark");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      setTheme(savedTheme);
     }
+  }, []);
 
-    load();
-  }, [open]);
+  function changeTheme(value: Theme) {
+    setTheme(value);
 
-  async function save() {
-    setSaving(true);
+    localStorage.setItem("skillbridge-theme", value);
 
-    await updateSettings(userId, {
-      theme,
-    });
-
-    setSaving(false);
-
-    onClose();
+    document.documentElement.classList.remove("dark", "light");
+    document.documentElement.classList.add(value);
   }
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <div className="w-full max-w-lg rounded-3xl bg-slate-900 p-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm">
 
-        <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-white">
-            Appearance
-          </h2>
+      <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-zinc-950 p-6 shadow-2xl sm:p-8">
+
+        {/* Header */}
+        <div className="flex items-center justify-between">
+
+          <div className="flex items-center gap-3">
+
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+              <Palette className="h-5 w-5 text-zinc-300" />
+            </div>
+
+            <h2 className="text-2xl font-bold text-white">
+              Appearance
+            </h2>
+
+          </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-white"
+            className="rounded-xl p-2 text-zinc-500 hover:bg-white/5 hover:text-white"
           >
-            ✕
+            <X className="h-5 w-5" />
           </button>
+
         </div>
 
-        <div className="space-y-4">
+        <p className="mt-6 text-sm text-zinc-400">
+          Choose how SkillBridge should look.
+        </p>
 
-          <ThemeButton
-            label="🌙 Dark"
-            active={theme === "dark"}
-            onClick={() => setTheme("dark")}
-          />
+        {/* Themes */}
+        <div className="mt-6 grid grid-cols-2 gap-4">
 
-          <ThemeButton
-            label="☀️ Light"
-            active={theme === "light"}
-            onClick={() => setTheme("light")}
-          />
+          <button
+            type="button"
+            onClick={() => changeTheme("dark")}
+            className={`rounded-2xl border p-5 text-left transition ${
+              theme === "dark"
+                ? "border-white bg-zinc-800"
+                : "border-white/10 bg-zinc-900 hover:border-white/20"
+            }`}
+          >
+            <div className="h-20 rounded-xl bg-black" />
 
-          <ThemeButton
-            label="💻 System"
-            active={theme === "system"}
-            onClick={() => setTheme("system")}
-          />
+            <p className="mt-4 font-bold text-white">
+              Dark
+            </p>
+
+            <p className="mt-1 text-xs text-zinc-500">
+              Dark workspace
+            </p>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => changeTheme("light")}
+            className={`rounded-2xl border p-5 text-left transition ${
+              theme === "light"
+                ? "border-black bg-zinc-100"
+                : "border-white/10 bg-zinc-900 hover:border-white/20"
+            }`}
+          >
+            <div className="h-20 rounded-xl bg-white" />
+
+            <p className="mt-4 font-bold text-white">
+              Light
+            </p>
+
+            <p className="mt-1 text-xs text-zinc-500">
+              Light workspace
+            </p>
+          </button>
 
         </div>
 
         <button
-          onClick={save}
-          disabled={saving}
-          className="mt-8 w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white hover:bg-indigo-500"
+          type="button"
+          onClick={onClose}
+          className="mt-6 w-full rounded-xl bg-white py-3.5 font-bold text-black transition hover:bg-zinc-200"
         >
-          {saving ? "Saving..." : "Save Changes"}
+          Done
         </button>
 
       </div>
     </div>
-  );
-}
-
-interface ThemeButtonProps {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}
-
-function ThemeButton({
-  label,
-  active,
-  onClick,
-}: ThemeButtonProps) {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full rounded-xl border p-4 text-left transition ${
-        active
-          ? "border-indigo-500 bg-indigo-500/20 text-white"
-          : "border-slate-700 bg-slate-800 text-slate-300"
-      }`}
-    >
-      {label}
-    </button>
   );
 }

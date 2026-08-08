@@ -1,53 +1,48 @@
 "use client";
 
 import Link from "next/link";
-import Container from "./Container";
+import Container from "@/components/layout/Container";
 import { navigation } from "@/constants/navigation";
 
 export default function Navbar() {
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-cyan-500/10 bg-[#050816]/80 backdrop-blur-2xl">
-      <Container className="flex h-20 items-center justify-between">
+    <header className="border-b border-[#1f1f1f] bg-black">
+      <Container className="flex h-16 items-center justify-between">
 
         {/* Logo */}
-
         <Link
           href="/"
-          className="text-3xl font-black tracking-tight"
+          className="text-xl font-semibold tracking-tight text-white transition hover:text-neutral-300"
         >
-          <span className="bg-gradient-to-r from-cyan-400 via-sky-400 to-violet-400 bg-clip-text text-transparent">
-            SkillBridge
-          </span>
+          SkillBridge
         </Link>
 
         {/* Navigation */}
-
-        <nav className="hidden lg:flex items-center gap-10">
+        <nav className="hidden items-center gap-8 lg:flex">
           {navigation.map((item) => (
             <Link
               key={item.name}
               href={item.href}
-              className="text-slate-300 transition hover:text-cyan-400"
+              className="text-sm font-medium text-[#a1a1a1] transition-colors hover:text-white"
             >
               {item.name}
             </Link>
           ))}
         </nav>
 
-        {/* Buttons */}
-
-        <div className="flex items-center gap-4">
+        {/* Actions */}
+        <div className="flex items-center gap-3">
 
           <Link
             href="/login"
-            className="rounded-xl border border-cyan-500/20 px-5 py-2 text-slate-200 transition hover:border-cyan-400 hover:text-cyan-400"
+            className="rounded-lg border border-[#333] px-4 py-2 text-sm font-medium text-white transition hover:border-[#555] hover:bg-[#111]"
           >
             Login
           </Link>
 
           <Link
             href="/signup"
-            className="rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 px-6 py-2 font-semibold text-white shadow-lg shadow-cyan-500/20 transition hover:scale-105"
+            className="rounded-lg border border-white bg-white px-4 py-2 text-sm font-medium !text-black transition hover:bg-[#e5e5e5]"
           >
             Get Started
           </Link>

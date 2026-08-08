@@ -20,13 +20,6 @@ export async function signIn(
   });
 }
 
-export async function demoLogin() {
-  return await supabase.auth.signInWithPassword({
-    email: "demo@skillbridge.dev",
-    password: "SkillBridge@123",
-  });
-}
-
 export async function logout() {
   return await supabase.auth.signOut();
 }

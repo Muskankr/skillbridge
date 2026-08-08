@@ -1,19 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import {
-  signIn,
-  demoLogin,
-} from "@/features/auth/services/auth.service";
+import { signIn } from "@/features/auth/services/auth.service";
 
 export default function LoginForm() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
 
   async function handleLogin() {
@@ -24,10 +21,7 @@ export default function LoginForm() {
 
     setLoading(true);
 
-    const { error } = await signIn(
-      email,
-      password
-    );
+    const { error } = await signIn(email, password);
 
     setLoading(false);
 
@@ -39,78 +33,96 @@ export default function LoginForm() {
     router.push("/dashboard");
   }
 
-  async function handleDemoLogin() {
-    setLoading(true);
-
-    const { error } = await demoLogin();
-
-    setLoading(false);
-
-    if (error) {
-      alert(
-        "Demo account is not created yet in Supabase."
-      );
-      return;
-    }
-
-    router.push("/dashboard");
-  }
-
   return (
     <div className="space-y-6">
 
-      <button
-        onClick={handleDemoLogin}
-        disabled={loading}
-        className="w-full rounded-xl bg-emerald-600 py-4 font-semibold text-white transition hover:bg-emerald-500"
-      >
-        🚀 Continue with Demo Account
-      </button>
+      {/* Email */}
+      <div>
+        <label className="mb-2 block text-sm font-medium text-zinc-300">
+          Email
+        </label>
 
-      <div className="flex items-center gap-4">
-        <div className="h-px flex-1 bg-white/10" />
-        <span className="text-sm text-slate-400">
-          OR
-        </span>
-        <div className="h-px flex-1 bg-white/10" />
+        <input
+          type="email"
+          placeholder="you@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="
+            w-full rounded-lg
+            border border-[#262626]
+            bg-[#0a0a0a]
+            px-4 py-3
+            text-sm text-white
+            placeholder:text-zinc-700
+            outline-none
+            transition
+            focus:border-[#555]
+            focus:ring-1
+            focus:ring-[#333]
+          "
+        />
       </div>
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) =>
-          setEmail(e.target.value)
-        }
-        className="w-full rounded-xl border border-white/10 bg-slate-800 p-4 text-white outline-none"
-      />
+      {/* Password */}
+      <div>
+        <label className="mb-2 block text-sm font-medium text-zinc-300">
+          Password
+        </label>
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) =>
-          setPassword(e.target.value)
-        }
-        className="w-full rounded-xl border border-white/10 bg-slate-800 p-4 text-white outline-none"
-      />
+        <input
+          type="password"
+          placeholder="••••••••"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="
+            w-full rounded-lg
+            border border-[#262626]
+            bg-[#0a0a0a]
+            px-4 py-3
+            text-sm text-white
+            placeholder:text-zinc-700
+            outline-none
+            transition
+            focus:border-[#555]
+            focus:ring-1
+            focus:ring-[#333]
+          "
+        />
+      </div>
 
+      {/* Login */}
       <button
+        type="button"
         onClick={handleLogin}
         disabled={loading}
-        className="w-full rounded-xl bg-indigo-600 py-4 font-semibold text-white transition hover:bg-indigo-500"
+        className="
+          w-full rounded-lg
+          border border-white
+          bg-white
+          px-4 py-3
+          text-sm font-medium text-black
+          transition
+          hover:bg-zinc-200
+          disabled:cursor-not-allowed
+          disabled:opacity-50
+        "
       >
-        {loading ? "Signing In..." : "Login"}
+        {loading ? "Signing In..." : "Sign In"}
       </button>
 
-      <p className="text-center text-sm text-slate-400">
+      {/* Signup */}
+      <p className="pt-2 text-center text-sm text-zinc-500">
         Don't have an account?{" "}
-        <a
+        <Link
           href="/signup"
-          className="font-semibold text-indigo-400 hover:text-indigo-300"
+          className="
+            font-medium text-white
+            underline underline-offset-4
+            transition hover:text-zinc-300
+          "
         >
           Create Account
-        </a>
+        </Link>
       </p>
 
     </div>

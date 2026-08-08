@@ -8,22 +8,40 @@ export default function RoadmapCard({
   completed,
 }: Props) {
   return (
-    <div className="flex items-center justify-between rounded-xl bg-slate-900 border border-white/10 p-5">
+    <div className="flex items-center justify-between gap-4 rounded-2xl border border-[#262626] bg-[#050505] p-5 transition hover:border-[#3a3a3a]">
+      <div className="flex items-center gap-4">
+        <div
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border ${
+            completed
+              ? "border-white bg-white text-black"
+              : "border-[#333] bg-[#111] text-zinc-500"
+          }`}
+        >
+          {completed ? "✓" : "•"}
+        </div>
 
-      <h3 className="text-white">
-        {title}
-      </h3>
+        <div>
+          <h3 className="font-semibold text-white">
+            {title}
+          </h3>
+
+          <p className="mt-1 text-sm text-zinc-600">
+            {completed
+              ? "Learning milestone completed"
+              : "Keep working on this milestone"}
+          </p>
+        </div>
+      </div>
 
       <span
-        className={`rounded-full px-4 py-1 text-sm ${
+        className={`shrink-0 rounded-full border px-3 py-1 text-xs font-semibold ${
           completed
-            ? "bg-green-500 text-white"
-            : "bg-slate-700 text-slate-300"
+            ? "border-white/20 bg-white text-black"
+            : "border-[#333] bg-[#111] text-zinc-500"
         }`}
       >
         {completed ? "Completed" : "Pending"}
       </span>
-
     </div>
   );
 }
