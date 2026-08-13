@@ -1,36 +1,212 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 SkillBridge
 
-## Getting Started
+### Your Skills. Your Achievements. Your Career — One Platform.
 
-First, run the development server:
+SkillBridge is a full-stack developer career platform designed to help students and developers build, manage, and showcase their technical journey in one place.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Instead of keeping GitHub profiles, certificates, projects, achievements, resumes, and learning progress scattered across different platforms, SkillBridge brings them together into a single, clean, shareable developer profile.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🔗 **Live Demo:** https://skillbridge-zeta-ten.vercel.app/
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ Why SkillBridge?
 
-## Learn More
+As a student developer, your achievements are often spread across:
 
-To learn more about Next.js, take a look at the following resources:
+- GitHub
+- LinkedIn
+- Certificates
+- Coding platforms
+- Projects
+- Hackathons
+- Open-source contributions
+- Resumes
+- Personal portfolios
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+SkillBridge aims to solve this problem by creating **one centralized career profile** where developers can showcase their skills, achievements, projects, and progress.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> **One profile. Every achievement.**
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🎯 Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 👤 Developer Profile
+
+Create a professional developer profile containing:
+
+- Full name
+- Username
+- Profile picture
+- Headline
+- Bio
+- College and branch
+- Graduation year
+- Location
+- Social links
+- Career score
+- Profile completion
+
+---
+
+### 💼 Developer Portfolio
+
+Build a professional portfolio from your SkillBridge profile.
+
+Showcase:
+
+- Projects
+- Technical skills
+- Achievements
+- Certificates
+- Education
+- GitHub activity
+- Career progress
+
+The goal is to provide developers with a single profile that can be shared with recruiters, mentors, teammates, and other developers.
+
+---
+
+### 🐙 GitHub Integration
+
+SkillBridge connects with GitHub to retrieve public GitHub information.
+
+Currently integrated information includes:
+
+- GitHub profile
+- Avatar
+- Username
+- Bio
+- Public repositories
+- Followers
+- Following
+- Location
+- Latest repositories
+- Repository descriptions
+- Stars
+- Forks
+- Primary programming language
+- Repository update dates
+
+This helps developers showcase their GitHub activity without manually entering every repository.
+
+---
+
+### 🏆 Achievements
+
+Keep important developer achievements organized in one place.
+
+Examples include:
+
+- Open-source achievements
+- Hackathon achievements
+- Competition achievements
+- Community achievements
+- Certifications
+- Development milestones
+
+---
+
+### 📜 Certificates
+
+Store certificates and verification information so they can be easily showcased as part of your developer profile.
+
+---
+
+### 📊 Career Score
+
+SkillBridge includes a career-oriented scoring system designed to give developers an overview of their progress.
+
+The profile can track factors such as:
+
+- Profile completion
+- Projects
+- Achievements
+- Skills
+- GitHub presence
+- Learning activity
+
+---
+
+### 🔥 XP & Gamification
+
+SkillBridge includes gamification elements to encourage consistent learning and development.
+
+Developers can earn XP and progress through levels as they complete activities.
+
+---
+
+### 📅 Daily Challenges
+
+Daily challenges encourage developers to maintain consistency and continuously improve their technical skills.
+
+---
+
+### 📈 Profile Progress
+
+Track your career profile and identify areas that can be improved.
+
+SkillBridge provides profile completion and progress information to help developers build a stronger professional presence.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+- ⚛️ React
+- ▲ Next.js
+- 🟦 TypeScript
+- 🎨 Tailwind CSS
+
+### Backend & Database
+
+- ⚡ Supabase
+- 🐘 PostgreSQL
+- 🔐 Supabase Authentication
+- 🗄️ Supabase Database
+
+### APIs & Integrations
+
+- 🐙 GitHub REST API
+
+### Deployment
+
+- ▲ Vercel
+
+---
+
+## 🏗️ Project Structure
+
+```text
+SkillBridge/
+│
+├── src/
+│   │
+│   ├── app/
+│   │   ├── dashboard/
+│   │   ├── profile/
+│   │   ├── settings/
+│   │   └── ...
+│   │
+│   ├── components/
+│   │
+│   ├── features/
+│   │   ├── github/
+│   │   │   └── services/
+│   │   │       └── github.service.ts
+│   │   │
+│   │   └── ...
+│   │
+│   ├── lib/
+│   │   └── supabase.ts
+│   │
+│   └── ...
+│
+├── public/
+│
+├── package.json
+├── next.config.*
+├── tsconfig.json
+└── README.md
